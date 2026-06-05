@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>민경이즘 — 헤어 아카이브</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:      #FAF8F5;
+      --card:    #FFFFFF;
+      --pale:    #F4F2ED;
+      --purple:  #7C6FF7;
+      --yellow:  #FFD166;
+      --green:   #C8F135;
+      --dark:    #111111;
+      --text:    #1A1A1A;
+      --muted:   #888888;
+      --border:  #E8E4DC;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; cursor: pointer; }
+
+    /* ─── NAVBAR ─── */
+    .navbar {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(250,248,245,.9);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 60px;
+      height: 68px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-size: 19px; font-weight: 900; letter-spacing: -.5px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .nav-logo .dot {
+      width: 9px; height: 9px;
+      border-radius: 50%; background: var(--purple);
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 32px; list-style: none;
+    }
+    .nav-links a {
+      font-size: 14px; font-weight: 500; color: #666;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--dark); color: #fff !important;
+      padding: 10px 22px; border-radius: 999px;
+      font-size: 13px; font-weight: 700;
+      transition: opacity .2s, transform .18s;
+    }
+    .nav-cta:hover { opacity: .82; transform: scale(1.03); }
+
+    /* ─── HERO ─── */
+    .hero {
+      text-align: center;
+      padding: 88px 40px 64px;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--green); color: var(--dark);
+      font-size: 12px; font-weight: 800;
+      padding: 5px 16px; border-radius: 999px;
+      margin-bottom: 32px; letter-spacing: .04em;
+    }
+    .hero-badge::before {
+      content: ''; width: 5px; height: 5px;
+      border-radius: 50%; background: rgba(0,0,0,.45);
+    }
+    .hero-title {
+      font-size: clamp(46px, 7.5vw, 78px);
+      font-weight: 900;
+      line-height: 1.07;
+      letter-spacing: -.045em;
+      margin-bottom: 26px;
+    }
+    .hero-title .highlight {
+      position: relative; display: inline-block;
+    }
+    .hero-title .floating-tag {
+      position: absolute;
+      top: -30px; left: 50%; transform: translateX(-50%);
+      background: var(--yellow); color: var(--dark);
+      font-size: 11px; font-weight: 800;
+      padding: 3px 13px; border-radius: 999px;
+      white-space: nowrap; letter-spacing: .02em;
+      box-shadow: 0 2px 12px rgba(255,209,102,.4);
+    }
+    .hero-desc {
+      font-size: 15.5px; color: var(--muted);
+      line-height: 1.95; max-width: 620px; margin: 0 auto;
+      white-space: nowrap;
+    }
+
+    /* ─── FILTER ─── */
+    .filter-wrap {
+      display: flex; justify-content: center;
+      padding: 0 40px 56px;
+    }
+    .filter-tabs {
+      display: flex; gap: 6px;
+      background: #fff; padding: 5px;
+      border-radius: 999px; border: 1.5px solid var(--border);
+    }
+    .tab-btn {
+      padding: 9px 21px; border-radius: 999px; border: none;
+      background: transparent; font-size: 13.5px; font-weight: 500;
+      color: #777; white-space: nowrap;
+      transition: all .22s ease;
+    }
+    .tab-btn.active,
+    .tab-btn:hover {
+      background: var(--yellow); color: var(--dark); font-weight: 700;
+    }
+    .tab-btn .count {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: rgba(0,0,0,.1); font-size: 10px; font-weight: 800;
+      margin-left: 5px;
+    }
+    .tab-btn.active .count { background: rgba(0,0,0,.15); }
+
+    /* ─── GRID ─── */
+    .archive-section {
+      max-width: 1180px; margin: 0 auto;
+      padding: 0 40px 72px;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    /* ─── CARD ─── */
+    .card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 22px;
+      padding: 26px 28px 22px;
+      cursor: pointer;
+      display: flex; flex-direction: column; gap: 11px;
+      min-height: 162px;
+      transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 52px rgba(0,0,0,.09);
+      border-color: transparent;
+    }
+    .card.featured {
+      background: var(--purple);
+      border-color: var(--purple); color: #fff;
+    }
+    .card.featured:hover {
+      box-shadow: 0 18px 52px rgba(124,111,247,.38);
+    }
+    .card.hidden { display: none; }
+
+    .card-top {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-tag {
+      display: inline-flex; align-items: center;
+      font-size: 10.5px; font-weight: 800;
+      padding: 3.5px 11px; border-radius: 999px;
+      letter-spacing: .02em;
+    }
+    .tag-face  { background: #EDEEFF; color: #5558E8; }
+    .tag-care  { background: #FFF5D6; color: #B07A00; }
+    .tag-style { background: #E8FFF2; color: #1A8C55; }
+    .tag-color { background: #FFE8E8; color: #C0352B; }
+    .card.featured .card-tag {
+      background: rgba(255,255,255,.2); color: #fff;
+    }
+    .card-num {
+      font-size: 10.5px; font-weight: 700; color: #BFBDAF;
+    }
+    .card.featured .card-num { color: rgba(255,255,255,.45); }
+
+    .card-title {
+      font-size: 15.5px; font-weight: 700;
+      line-height: 1.55; flex: 1;
+    }
+
+    .card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 2px;
+    }
+    .card-label {
+      font-size: 11px; font-weight: 500; color: #AAAAAA;
+    }
+    .card.featured .card-label { color: rgba(255,255,255,.5); }
+
+    .card-arrow {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--pale);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      transition: background .2s;
+    }
+    .card:hover .card-arrow { background: var(--yellow); }
+    .card.featured .card-arrow { background: rgba(255,255,255,.18); color: #fff; }
+    .card.featured:hover .card-arrow { background: rgba(255,255,255,.32); }
+
+    /* ─── CTA BAND ─── */
+    .cta-wrap { padding: 0 40px 80px; max-width: 1180px; margin: 0 auto; }
+    .cta-band {
+      background: var(--yellow); border-radius: 28px;
+      padding: 54px 64px;
+      display: flex; align-items: center; justify-content: space-between; gap: 40px;
+    }
+    .cta-text h3 {
+      font-size: clamp(22px, 3vw, 30px); font-weight: 900;
+      letter-spacing: -.035em; margin-bottom: 8px;
+    }
+    .cta-text p { font-size: 15px; color: #5A5040; line-height: 1.75; }
+    .cta-btn {
+      background: var(--dark); color: #fff;
+      padding: 14px 34px; border-radius: 999px;
+      font-size: 14px; font-weight: 700;
+      border: none; white-space: nowrap;
+      transition: opacity .2s, transform .18s;
+    }
+    .cta-btn:hover { opacity: .82; transform: scale(1.04); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--dark); color: #fff;
+      padding: 60px 60px 40px;
+    }
+    .footer-inner {
+      max-width: 1180px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 56px;
+      padding-bottom: 44px;
+      border-bottom: 1px solid #242424;
+    }
+    .footer-logo {
+      font-size: 20px; font-weight: 900;
+      display: flex; align-items: center; gap: 7px; margin-bottom: 14px;
+    }
+    .footer-logo .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--purple); }
+    .footer-brand p { font-size: 13.5px; color: #666; line-height: 1.85; }
+    .footer-col h4 {
+      font-size: 11px; font-weight: 800; color: #555;
+      text-transform: uppercase; letter-spacing: .1em;
+      margin-bottom: 18px;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+    .footer-col a { font-size: 13.5px; color: #888; transition: color .2s; }
+    .footer-col a:hover { color: #fff; }
+
+    .footer-bottom {
+      max-width: 1180px; margin: 30px auto 0;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-bottom p { font-size: 12.5px; color: #444; }
+    .footer-insta {
+      font-size: 12.5px; color: #555;
+      display: flex; align-items: center; gap: 6px;
+      transition: color .2s;
+    }
+    .footer-insta:hover { color: #fff; }
+
+    /* ─── MODAL ─── */
+    .overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,.48);
+      display: flex; align-items: center; justify-content: center;
+      padding: 40px 20px;
+      opacity: 0; visibility: hidden;
+      transition: opacity .28s, visibility .28s;
+    }
+    .overlay.open { opacity: 1; visibility: visible; }
+    .modal {
+      background: #fff; border-radius: 28px;
+      padding: 44px 48px 40px;
+      max-width: 580px; width: 100%;
+      position: relative;
+      transform: translateY(24px);
+      transition: transform .28s ease;
+      max-height: 88vh; overflow-y: auto;
+    }
+    .overlay.open .modal { transform: translateY(0); }
+    .modal-close {
+      position: absolute; top: 18px; right: 18px;
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--pale); border: none;
+      font-size: 15px; color: #888;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+    }
+    .modal-close:hover { background: #E8E4DC; }
+    .modal .modal-tag {
+      display: inline-flex; align-items: center;
+      font-size: 10.5px; font-weight: 800;
+      padding: 3.5px 11px; border-radius: 999px;
+      margin-bottom: 14px;
+    }
+    .modal h2 {
+      font-size: 22px; font-weight: 900;
+      letter-spacing: -.03em; line-height: 1.45;
+      margin-bottom: 20px;
+    }
+    .modal-body {
+      border-top: 1.5px solid #F0EDE8;
+      padding-top: 22px;
+      font-size: 14.5px; color: #666; line-height: 1.95;
+    }
+    .modal-placeholder {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 14px; padding: 32px 0; color: #AAA; text-align: center;
+    }
+    .modal-placeholder .icon { font-size: 38px; }
+    .modal-placeholder p { font-size: 14px; line-height: 1.7; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 960px) {
+      .navbar { padding: 0 24px; }
+      .nav-links li:not(:last-child) { display: none; }
+      .hero { padding: 64px 24px 52px; }
+      .filter-wrap { padding: 0 24px 44px; overflow-x: auto; justify-content: flex-start; }
+      .filter-tabs { flex-wrap: nowrap; }
+      .archive-section { padding: 0 24px 48px; }
+      .card-grid { grid-template-columns: repeat(2, 1fr); }
+      .cta-wrap { padding: 0 24px 60px; }
+      .cta-band { flex-direction: column; text-align: center; padding: 44px 36px; }
+      footer { padding: 48px 24px 36px; }
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+      .footer-brand { grid-column: 1 / -1; }
+      .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
+      .modal { padding: 36px 28px 32px; }
+    }
+    @media (max-width: 560px) {
+      .card-grid { grid-template-columns: 1fr; }
+      .hero-title { font-size: 38px; }
+      .footer-inner { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════ NAVBAR ══════════ -->
+  <nav class="navbar">
+    <div class="nav-logo">
+      <span class="dot"></span>민경이즘
+    </div>
+    <ul class="nav-links">
+      <li><a href="#archive">아카이브</a></li>
+      <li><a href="https://instagram.com" target="_blank">인스타그램</a></li>
+      <li><a href="https://instagram.com" target="_blank" class="nav-cta">팔로우하기 →</a></li>
+    </ul>
+  </nav>
+
+  <!-- ══════════ HERO ══════════ -->
+  <section class="hero">
+    <div class="hero-badge">민경이즘 Archive</div>
+    <h1 class="hero-title">
+      미용실에서 절대 안 알려주는<br>
+      생활 밀착형 실전 헤어 관리팁 18
+    </h1>
+    <p class="hero-desc">
+      드라이, 염색, 헤어스타일, 헤어관리, 이미지메이킹, 얼굴형맞춤헤어 총망라<br>
+      25년차 현장 전문 미용 교수인 제가 모두 풀었습니다!
+    </p>
+  </section>
+
+  <!-- ══════════ FILTER TABS ══════════ -->
+  <div class="filter-wrap">
+    <div class="filter-tabs">
+      <button class="tab-btn active" data-filter="all">
+        전체 <span class="count">18</span>
+      </button>
+      <button class="tab-btn" data-filter="face">
+        얼굴형 &amp; 비율 <span class="count">5</span>
+      </button>
+      <button class="tab-btn" data-filter="style">
+        스타일링 <span class="count">8</span>
+      </button>
+      <button class="tab-btn" data-filter="care">
+        헤어 케어 <span class="count">4</span>
+      </button>
+      <button class="tab-btn" data-filter="color">
+        컬러 &amp; 염색 <span class="count">1</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════ ARCHIVE GRID ══════════ -->
+  <section class="archive-section" id="archive">
+    <div class="card-grid" id="cardGrid">
+
+      <div class="card featured" data-category="face"
+        data-title="얼굴 유형별 피해야 할 헤어스타일 &amp; 최상의 헤어스타일"
+        data-tag="얼굴형 &amp; 비율" data-tag-class="tag-face"
+        data-url="https://imaginary-tempo-4fc.notion.site/2f44ab3726948094ade5de0d28954dbb">
+        <div class="card-top">
+          <span class="card-tag">얼굴형 &amp; 비율</span>
+          <span class="card-num">No.01</span>
+        </div>
+        <div class="card-title">얼굴 유형별 피해야 할 헤어스타일 &amp; 최상의 헤어스타일</div>
+        <div class="card-footer">
+          <span class="card-label">종합 가이드</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="care"
+        data-title="헤어 에센스, 바를수록 떡지고 볼륨이 죽는 이유"
+        data-tag="헤어 케어" data-tag-class="tag-care"
+        data-url="https://imaginary-tempo-4fc.notion.site/2f54ab3726948050a342cfb1978f8e9d">
+        <div class="card-top">
+          <span class="card-tag tag-care">헤어 케어</span>
+          <span class="card-num">No.02</span>
+        </div>
+        <div class="card-title">헤어 에센스, 바를수록 떡지고 볼륨이 죽는 이유</div>
+        <div class="card-footer">
+          <span class="card-label">케어 가이드</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="face"
+        data-title="얼굴이 넓고 각진데 뾰족해 보이는 이유?"
+        data-tag="얼굴형 &amp; 비율" data-tag-class="tag-face"
+        data-url="https://imaginary-tempo-4fc.notion.site/2fb4ab3726948078b10ce78bc96f5147">
+        <div class="card-top">
+          <span class="card-tag tag-face">얼굴형 &amp; 비율</span>
+          <span class="card-num">No.03</span>
+        </div>
+        <div class="card-title">얼굴이 넓고 각진데 뾰족해 보이는 이유?</div>
+        <div class="card-footer">
+          <span class="card-label">비율 분석</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="care"
+        data-title="겨울철 탈모 유형별 피해야 할 관리 습관과 반드시 지켜야 할 관리 기준"
+        data-tag="헤어 케어" data-tag-class="tag-care"
+        data-url="https://imaginary-tempo-4fc.notion.site/2fb4ab372694803e9736e4ac34a7a82f">
+        <div class="card-top">
+          <span class="card-tag tag-care">헤어 케어</span>
+          <span class="card-num">No.04</span>
+        </div>
+        <div class="card-title">겨울철 탈모 유형별 피해야 할 관리 습관과 반드시 지켜야 할 관리 기준</div>
+        <div class="card-footer">
+          <span class="card-label">탈모 케어</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="care"
+        data-title="샴푸할 때 가장 많이 하는 실수"
+        data-tag="헤어 케어" data-tag-class="tag-care"
+        data-url="https://imaginary-tempo-4fc.notion.site/2f74ab37269480608748fbb0d323d1ec">
+        <div class="card-top">
+          <span class="card-tag tag-care">헤어 케어</span>
+          <span class="card-num">No.05</span>
+        </div>
+        <div class="card-title">샴푸할 때 가장 많이 하는 실수</div>
+        <div class="card-footer">
+          <span class="card-label">케어 가이드</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="care"
+        data-title="두피 유형별 헤어 제품 8가지"
+        data-tag="헤어 케어" data-tag-class="tag-care"
+        data-url="https://imaginary-tempo-4fc.notion.site/8-3134ab3726948032880dc5df9a40c9e8">
+        <div class="card-top">
+          <span class="card-tag tag-care">헤어 케어</span>
+          <span class="card-num">No.06</span>
+        </div>
+        <div class="card-title">두피 유형별 헤어 제품 8가지</div>
+        <div class="card-footer">
+          <span class="card-label">제품 가이드</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="face"
+        data-title="얼굴 비율 조합 해석 가이드 팁!"
+        data-tag="얼굴형 &amp; 비율" data-tag-class="tag-face"
+        data-url="https://imaginary-tempo-4fc.notion.site/3174ab372694808b8b26d78781784088">
+        <div class="card-top">
+          <span class="card-tag tag-face">얼굴형 &amp; 비율</span>
+          <span class="card-num">No.07</span>
+        </div>
+        <div class="card-title">얼굴 비율 조합 해석 가이드 팁!</div>
+        <div class="card-footer">
+          <span class="card-label">비율 분석</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="style"
+        data-title="앞머리 길이별 인식 차이 총정리"
+        data-tag="스타일링" data-tag-class="tag-style"
+        data-url="https://imaginary-tempo-4fc.notion.site/3194ab372694802fbe63f6b89c5ac0e3">
+        <div class="card-top">
+          <span class="card-tag tag-style">스타일링</span>
+          <span class="card-num">No.08</span>
+        </div>
+        <div class="card-title">앞머리 길이별 인식 차이 총정리</div>
+        <div class="card-footer">
+          <span class="card-label">스타일 가이드</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="style"
+        data-title="드라이할 때 가장 많이 하는 실수"
+        data-tag="스타일링" data-tag-class="tag-style"
+        data-url="https://imaginary-tempo-4fc.notion.site/2f64ab37269480fe90b0caccd9ef4013">
+        <div class="card-top">
+          <span class="card-tag tag-style">스타일링</span>
+          <span class="card-num">No.09</span>
+        </div>
+        <div class="card-title">드라이할 때 가장 많이 하는 실수</div>
+        <div class="card-footer">
+          <span class="card-label">스타일 가이드</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="face"
+        data-title="가르마 위치에 따른 얼굴 비율 인식 차이"
+        data-tag="얼굴형 &amp; 비율" data-tag-class="tag-face"
+        data-url="https://imaginary-tempo-4fc.notion.site/3244ab37269480508048cef861ed12c4">
+        <div class="card-top">
+          <span class="card-tag tag-face">얼굴형 &amp; 비율</span>
+          <span class="card-num">No.10</span>
+        </div>
+        <div class="card-title">가르마 위치에 따른 얼굴 비율 인식 차이</div>
+        <div class="card-footer">
+          <span class="card-label">비율 분석</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="style"
+        data-title="예쁜 머리 스타일은 밸런스가 중요합니다"
+        data-tag="스타일링" data-tag-class="tag-style"
+        data-url="https://imaginary-tempo-4fc.notion.site/3324ab3726948017b8efe2bcb4951e67">
+        <div class="card-top">
+          <span class="card-tag tag-style">스타일링</span>
+          <span class="card-num">No.11</span>
+        </div>
+        <div class="card-title">예쁜 머리 스타일은 밸런스가 중요합니다</div>
+        <div class="card-footer">
+          <span class="card-label">스타일 가이드</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="style"
+        data-title="고급스러워 보이는 헤어스타일 기준"
+        data-tag="스타일링" data-tag-class="tag-style"
+        data-url="https://imaginary-tempo-4fc.notion.site/3324ab37269480409ce5f884518f9dc4">
+        <div class="card-top">
+          <span class="card-tag tag-style">스타일링</span>
+          <span class="card-num">No.12</span>
+        </div>
+        <div class="card-title">고급스러워 보이는 헤어스타일 기준</div>
+        <div class="card-footer">
+          <span class="card-label">스타일 가이드</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="style"
+        data-title="더 사랑스러워 보이는 웨이브의 기준"
+        data-tag="스타일링" data-tag-class="tag-style"
+        data-url="https://imaginary-tempo-4fc.notion.site/2f74ab37269480e9b332eebde8932f12">
+        <div class="card-top">
+          <span class="card-tag tag-style">스타일링</span>
+          <span class="card-num">No.13</span>
+        </div>
+        <div class="card-title">더 사랑스러워 보이는 웨이브의 기준</div>
+        <div class="card-footer">
+          <span class="card-label">스타일 가이드</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="style"
+        data-title="머리는 심플한데 세련돼 보이지 않은 이유"
+        data-tag="스타일링" data-tag-class="tag-style"
+        data-url="https://imaginary-tempo-4fc.notion.site/34e4ab3726948002af87e1d188ad3fa3">
+        <div class="card-top">
+          <span class="card-tag tag-style">스타일링</span>
+          <span class="card-num">No.14</span>
+        </div>
+        <div class="card-title">머리는 심플한데 세련돼 보이지 않은 이유</div>
+        <div class="card-footer">
+          <span class="card-label">스타일 가이드</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="style"
+        data-title="그냥 묶었는데 예뻐보이는 이유"
+        data-tag="스타일링" data-tag-class="tag-style"
+        data-url="https://imaginary-tempo-4fc.notion.site/3324ab372694800eae4cfe9617d1e8e0">
+        <div class="card-top">
+          <span class="card-tag tag-style">스타일링</span>
+          <span class="card-num">No.15</span>
+        </div>
+        <div class="card-title">그냥 묶었는데 예뻐보이는 이유</div>
+        <div class="card-footer">
+          <span class="card-label">스타일 가이드</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="card featured" data-category="face"
+        data-title="얼굴형별 헤어 가이드 정리본"
+        data-tag="얼굴형 &amp; 비율" data-tag-class="tag-face"
+        data-url="https://imaginary-tempo-4fc.notion.site/33f4ab37269480c0be42ee7eee6853bc">
+        <div class="card-top">
+          <span class="card-tag">얼굴형 &amp; 비율</span>
+          <span class="card-num">No.16</span>
+        </div>
+        <div class="card-title">얼굴형별 헤어 가이드 정리본</div>
+        <div class="card-footer">
+          <span class="card-label">마스터 가이드</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="color"
+        data-title="피부톤 모르고 염색하면 생기는 일"
+        data-tag="컬러 &amp; 염색" data-tag-class="tag-color"
+        data-url="https://imaginary-tempo-4fc.notion.site/34e4ab372694807ba3d3e75f8b897e37">
+        <div class="card-top">
+          <span class="card-tag tag-color">컬러 &amp; 염색</span>
+          <span class="card-num">No.17</span>
+        </div>
+        <div class="card-title">피부톤 모르고 염색하면 생기는 일</div>
+        <div class="card-footer">
+          <span class="card-label">컬러 가이드</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="style"
+        data-title="드라이 할 때 절대하면 안되는 것"
+        data-tag="스타일링" data-tag-class="tag-style"
+        data-url="https://imaginary-tempo-4fc.notion.site/3594ab372694803499beeaccfb62779b">
+        <div class="card-top">
+          <span class="card-tag tag-style">스타일링</span>
+          <span class="card-num">No.18</span>
+        </div>
+        <div class="card-title">드라이 할 때 절대하면 안되는 것</div>
+        <div class="card-footer">
+          <span class="card-label">스타일 가이드</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════ CTA BAND ══════════ -->
+  <div class="cta-wrap">
+    <div class="cta-band">
+      <div class="cta-text">
+        <h3>더 많은 헤어 노하우가<br>매주 업데이트됩니다</h3>
+        <p>인스타그램에서 민경이즘을 팔로우하고<br>최신 콘텐츠를 가장 먼저 받아보세요</p>
+      </div>
+      <button class="cta-btn" onclick="window.open('https://instagram.com','_blank')">
+        인스타그램 팔로우 →
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════ FOOTER ══════════ -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <span class="dot"></span>민경이즘
+        </div>
+        <p>25년 경력 헤어디자이너이자 건국대학교<br>미용교육 교수 민경이즘의 전문 아카이브</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#archive">전체 아카이브</a></li>
+          <li><a href="https://instagram.com" target="_blank">인스타그램</a></li>
+          <li><a href="#">행복한 성공수업</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>카테고리</h4>
+        <ul>
+          <li><a href="#" onclick="filterCards('face');return false;">얼굴형 &amp; 비율</a></li>
+          <li><a href="#" onclick="filterCards('care');return false;">헤어 케어</a></li>
+          <li><a href="#" onclick="filterCards('style');return false;">스타일링</a></li>
+          <li><a href="#" onclick="filterCards('color');return false;">컬러 &amp; 염색</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 민경이즘. All rights reserved.</p>
+      <a class="footer-insta" href="https://instagram.com" target="_blank">
+        ✦ @mingyonism
+      </a>
+    </div>
+  </footer>
+
+
+  <script>
+    // ── FILTER ──
+    function filterCards(filter) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === filter);
+      });
+      document.querySelectorAll('.card').forEach(card => {
+        const match = filter === 'all' || card.dataset.category === filter;
+        card.classList.toggle('hidden', !match);
+      });
+      document.getElementById('archive').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => filterCards(btn.dataset.filter));
+    });
+
+    // attach click to all cards → open Notion URL in new tab
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => {
+        const url = card.dataset.url;
+        if (url) window.open(url, '_blank');
+      });
+    });
+  </script>
+</body>
+</html>
